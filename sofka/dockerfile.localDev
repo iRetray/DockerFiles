@@ -1,0 +1,12 @@
+FROM node:16.14.2
+LABEL stage="TESTING_FRONTEND_APP"
+WORKDIR /app
+COPY ./ /app
+
+RUN npm install -g @nrwl/cli
+RUN npm install -g nx
+RUN npm install --global yarn --force
+RUN yarn install
+
+CMD [ "node", "--version" ]
+CMD bash

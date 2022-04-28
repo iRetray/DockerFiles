@@ -1,0 +1,18 @@
+FROM node:16.14.2 as node
+WORKDIR /app
+COPY ./ /app/
+RUN npm install -g @nrwl/cli
+RUN npm install -g nx
+RUN npm install --force
+ARG configuration
+ARG app
+RUN nx build $app --configuration=$configuration 
+
+# Stage 1
+FROM nginx:alpine
+ARG configuration
+ARG app
+COPY --from=node /app/dist/apps/$app /usr/share/nginx/html
+COPY ./nginx/nginx.$configuration.conf /etc/nginx/conf.d/default.conf
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]
